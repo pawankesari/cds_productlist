@@ -1,0 +1,37 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Product Sales Information'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZI_ProductSalesOrg_Wrapper
+  as select from I_ProductSalesDelivery as _ProdSalesDelivery
+    inner join   I_Allwdplantsperslsorg as _PlantSalesOrg on  _ProdSalesDelivery.ProductSalesOrg         = _PlantSalesOrg.SalesOrganization
+                                                          and _ProdSalesDelivery.ProductDistributionChnl = _PlantSalesOrg.DistributionChannel
+  association [1..1] to I_SalesOrganization           as _SalesOrganization      on $projection.ProductSalesOrg = _SalesOrganization.SalesOrganization
+  association [0..*] to I_SalesOrganizationText       as _SalesOrganizationText  on $projection.ProductSalesOrg = _SalesOrganizationText.SalesOrganization
+  association [1..1] to I_DistributionChannel         as _DistributionChannel    on $projection.ProductDistributionChnl = _DistributionChannel.DistributionChannel
+  association [0..*] to I_DistributionChannelText     as _DistributionChannelText                   on $projection.ProductDistributionChnl = _DistributionChannelText.DistributionChannel
+  association [0..1] to I_SalesDistributionStatusVH   as _ProductSalesStatus     on $projection.ProductSalesStatus = _ProductSalesStatus.ProductSalesStatus
+  association [0..*] to I_SalesDistributionStatusText as _ProductSalesStatusText on $projection.ProductSalesStatus = _ProductSalesStatusText.ProductSalesStatus
+{
+  key        _ProdSalesDelivery.Product,
+             @ObjectModel.foreignKey.association: '_SalesOrganization'
+             @ObjectModel.text.association: '_SalesOrganizationText'
+  key        _ProdSalesDelivery.ProductSalesOrg,
+             @ObjectModel.foreignKey.association: '_DistributionChannel'
+  key        _ProdSalesDelivery.ProductDistributionChnl,
+             _PlantSalesOrg.Plant,
+             @ObjectModel.foreignKey.association: '_ProductSalesStatus'
+             @ObjectModel.text.association: '_ProductSalesStatusText'
+             _ProdSalesDelivery.ProductSalesStatus,
+             _ProductSalesStatusText[1:Language = $session.system_language ].ProductSalesStatusDescription,
+             _SalesOrganization,
+             _SalesOrganizationText,
+             _DistributionChannel,
+             _DistributionChannelText,
+             _ProductSalesStatus
+}
