@@ -1,0 +1,107 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Product List'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZI_ProductList
+  as select from I_ProductPlantBasic
+  association [1..1] to ZI_ProductPlant_Wrapper      as _ProductWrapper   on  $projection.Product = _ProductWrapper.Product
+                                                                          and $projection.Plant   = _ProductWrapper.Plant
+  association [1..1] to ZI_ProductSalesStatusVH      as _SalesStatus      on  $projection.salesstatus = _SalesStatus.SalesStatus
+  association [1..1] to ZI_BackflushVH               as _Backflush        on  $projection.matlcompismarkedforbackflush = _Backflush.BackflushText
+  association [0..*] to ZI_ProductSalesOrg_Wrapper   as _SalesOrgData     on  $projection.Product = _SalesOrgData.Product
+                                                                          and $projection.Plant   = _SalesOrgData.Plant
+  association [1..1] to I_ProdAvailabilityCheckGroup as _AvailabilityText on  $projection.AvailabilityCheckType = _AvailabilityText.ProdAvailabilityCheckGroup
+{
+  key    Product,
+  key    Plant,
+  key    _SalesOrgData.ProductSalesOrg,
+  key    _SalesOrgData.ProductDistributionChnl,
+
+         _SalesOrgData.ProductSalesStatus,
+         _SalesOrgData.ProductSalesStatusDescription,
+
+         _Text[Language = $session.system_language ].ProductDescription,
+
+         _Plant.PlantName,
+
+         _SalesOrgData._SalesOrganizationText[Language = $session.system_language ].SalesOrganizationName,
+         _SalesOrgData._DistributionChannelText[Language = $session.system_language ].DistributionChannelName,
+
+         _Product.ProductType,
+         _Product._ProductTypeName[Language = $session.system_language ].MaterialTypeName             as ProductTypeName,
+
+         _Product.ProductGroup,
+         _Product._ProductGroupText_2[Language = $session.system_language ].ProductGroupName,
+
+         ProfileCode,
+         _ProductStatusText[Language = $session.system_language ].MaterialUsabilityProfileName,
+
+         PurchasingGroup,
+         _PurchasingGroup.PurchasingGroupName,
+
+         _Product.SalesStatus,
+
+         _Product.BaseUnit                                                                            as BaseUnit,
+
+         AvailabilityCheckType,
+         _AvailabilityText._Text[Language = $session.system_language ].ProdAvailabilityCheckGroupDesc as AvailabilityCheckTypeName,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         SafetyStockQuantity,
+
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         _ProductWrapper.LotSizeRoundingQuantity,
+
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         MinimumLotSizeQuantity,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         MaximumLotSizeQuantity,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         FixedLotSizeQuantity,
+
+         _ProductWrapper.MatlCompIsMarkedForBackflush,
+         _ProductWrapper.MRPProfile,
+         _ProductWrapper.LotSizingProcedure,
+         _ProductWrapper.MRPPlanningCalendar,
+
+
+         _ProductWrapper.IsSafetyTime,
+         _ProductWrapper.SafetyDuration,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         _ProductWrapper.MaximumStockQuantity,
+
+
+         _ProductWrapper.Currency,
+         @Semantics.amount.currencyCode: 'Currency'
+         _ProductWrapper.PlannedPrice3InCoCodeCrcy,
+         @Semantics.amount.currencyCode: 'Currency'
+         _ProductWrapper.StandardPrice,
+
+         _ProductWrapper.FuturePlndPrice3ValdtyDate,
+
+
+         MRPType,
+         _MRPType._Text[Language = $session.system_language ].MRPTypeName,
+
+         MRPResponsible,
+         _MRPController.MRPControllerName,
+
+         IsBatchManagementRequired,
+
+         IsMarkedForDeletion,
+
+         _Product.CreatedByUser,
+         _Product.CreationDate,
+         _Product.LastChangedByUser,
+         _Product.LastChangeDateTime,
+
+         _Product.LastChangeDate,
+
+         _SalesStatus,
+         _Backflush
+
+}
