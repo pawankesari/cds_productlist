@@ -1,0 +1,26 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Product Sales Status Value Help'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+
+@Search.searchable: true
+
+define view entity ZI_ProductSalesStatusVH as select from    tvms
+    left outer join tvmst on  tvmst.spras = $session.system_language
+                          and tvms.vmsta  = tvmst.vmsta
+{
+      @Search.defaultSearchElement: true
+      @Search.fuzzinessThreshold: 0.75
+      @ObjectModel.text.element: [ 'SalesStatusText' ]
+  key tvms.vmsta  as SalesStatus,
+
+      @Semantics.text: true
+      @Search.defaultSearchElement: true
+      @Search.fuzzinessThreshold: 0.75
+      tvmst.vmstb as SalesStatusText
+}
