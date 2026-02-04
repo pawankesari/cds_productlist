@@ -1,0 +1,48 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'MRP Controller'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+@Search.searchable: true
+define view entity ZI_MRPController
+  as select from t024d as t024d
+  association [1..1] to I_Plant           as _Plant           on $projection.Plant = _Plant.Plant
+  association [0..1] to I_PurchasingGroup as _PurchasingGroup on $projection.PurchasingGroup = _PurchasingGroup.PurchasingGroup
+  association [0..1] to I_BusinessArea    as _BusinessArea    on $projection.BusinessArea = _BusinessArea.BusinessArea
+  association [0..1] to I_User            as _User            on $projection.UserID = _User.UserID
+{
+      // Key
+      @ObjectModel.foreignKey.association: '_Plant'
+      @Search: {defaultSearchElement: true, ranking: #LOW, fuzzinessThreshold: 0.8}
+  key t024d.werks                                    as Plant,
+      @ObjectModel.text.element: ['MRPControllerName']
+      @Search: {defaultSearchElement: true, ranking: #HIGH, fuzzinessThreshold: 0.8}
+  key cast(t024d.dispo as pph_dispo preserving type) as MRPController,
+
+      // Attributes
+      @Search: {defaultSearchElement: true, ranking: #LOW, fuzzinessThreshold: 0.8}
+      @Semantics.text: true
+      cast(t024d.dsnam as pph_dsnam preserving type) as MRPControllerName,
+      cast(t024d.dstel as pph_dstel preserving type) as MRPControllerPhoneNumber,
+      @ObjectModel.foreignKey.association: '_PurchasingGroup'
+      t024d.ekgrp                                    as PurchasingGroup,
+      --    @Consumption.valueHelpDefinition: [ { entity: { name: 'I_BusinessAreaStdVH', element: 'BusinessArea' } } ]
+      @ObjectModel.foreignKey.association: '_BusinessArea'
+      t024d.gsber                                    as BusinessArea,
+      t024d.prctr                                    as ProfitCenter,
+      case t024d.usrtyp
+        when 'US'
+          then t024d.usrkey
+          else ''
+      end                                            as UserID,
+
+      // Associations
+      _Plant,
+      _PurchasingGroup,
+      _BusinessArea,
+      _User
+};
