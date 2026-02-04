@@ -1,0 +1,92 @@
+@Metadata.layer: #CORE
+
+@UI:{
+        headerInfo:{    typeName:'Product',
+                        typeNamePlural:'Products',
+                        title:{
+                                type: #STANDARD,label:'Product List',value:'Product'
+                        }
+
+        },
+        presentationVariant: [{ requestAtLeast: [ 'Plant', 'Product' ] }]
+}
+
+@Search.searchable: true
+
+
+annotate entity ZC_Productist
+    with 
+{
+
+  @UI.lineItem: [{ position: 10 }]
+  @UI.selectionField:[{position: 10}]
+  Plant;
+
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.7
+
+  @UI.lineItem: [{ position: 20 }]
+  @UI.selectionField:[{position: 20}]
+  @Consumption.semanticObject: 'Material'
+  Product;
+
+  @UI.lineItem: [{ position: 30 }]
+  @UI.selectionField:[{position: 30}]
+  ProductType1;
+
+  @UI.lineItem: [{ position: 35 }]
+  @UI.selectionField:[{position: 40}]
+  ProductGroup;
+
+  @UI.lineItem: [{ position: 45 }]
+  @UI.selectionField:[{position: 40}]
+  CreatedByUser;
+
+  @UI.lineItem: [{ position: 50 }]
+  @UI.selectionField:[{position: 50}]
+  @Consumption.filter: { selectionType: #INTERVAL }
+  CreationDate;
+
+  @UI.selectionField:[{position: 60}]
+  @Consumption.filter: { selectionType: #INTERVAL }
+  LastChangeDate;
+
+  @UI.selectionField:[{position: 65}]
+  LastChangedByUser;
+
+  @UI.lineItem: [{ position: 60 }]
+  @UI.selectionField:[{position: 70}]
+  ProfileCode;
+
+
+  @UI.lineItem: [{ position: 70 }]
+  PurchasingGroup;
+
+
+  @UI.lineItem: [{ position: 80 }]
+  SafetyStockQuantity;
+
+  @UI.lineItem: [{ position: 90 }]
+  MRPType;
+
+  @UI.lineItem: [{ position: 100 }]
+  @UI.selectionField:[{position: 80}]
+  MRPResponsible;
+
+  @UI.lineItem: [{ position: 110 }]
+  IsBatchManagementRequired;
+
+  @UI.lineItem: [{ position: 120 }]
+  IsMarkedForDeletion;
+
+  @UI.lineItem: [{ position: 130 }]
+  @Search.fuzzinessThreshold: 0.8
+  @UI.selectionField:[{position: 100}]
+  ProductSalesOrg;
+  @UI.lineItem: [{ position: 140 }]
+  @Search.fuzzinessThreshold: 0.8
+  @UI.selectionField:[{position: 110}]
+  ProductDistributionChnl;
+    
+    
+}
