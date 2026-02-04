@@ -1,0 +1,143 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Projection Product List'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+
+@Metadata.allowExtensions: true
+
+define view entity ZC_Productist
+  as select from ZI_ProductList
+{
+         @Search.defaultSearchElement: true
+         @ObjectModel.text.element:['ProductDescription']
+
+         @Consumption.valueHelpDefinition: [ { entity: { name: 'I_ProductStdVH', element: 'Product' } }]
+  key    Product,
+
+         @Consumption.valueHelpDefinition: [{entity: { name: 'I_PlantStdVH', element: 'Plant'}}]
+         @ObjectModel.text.element: [ 'PlantName' ]
+  key    Plant,
+         @Consumption.valueHelpDefinition: [{entity: { name: 'I_SalesOrganization', element: 'SalesOrganization'}}]
+         @ObjectModel.text.element: [ 'SalesOrganizationName' ]
+         @Search.defaultSearchElement: true
+  key    ProductSalesOrg,
+         @Consumption.valueHelpDefinition: [{entity: { name: 'I_DistributionChannel', element: 'DistributionChannel'}}]
+         @ObjectModel.text.element: [ 'DistributionChannelName' ]
+         @Search.defaultSearchElement: true
+  key    ProductDistributionChnl,
+         @Consumption.valueHelpDefinition: [{entity: { name: 'ZI_ProductSalesStatusVH', element: 'SalesStatus'}}]
+         @ObjectModel.text.element: [ 'ProductSalesStatusDescription' ]
+         @EndUserText.label: 'Product Sales Status'
+         ProductSalesStatus,
+         ProductSalesStatusDescription,
+         @Search.defaultSearchElement: true
+         ProductDescription,
+         @Semantics.text: true
+         SalesOrganizationName,
+         @Semantics.text: true
+         DistributionChannelName,
+         @Semantics.text: true
+         PlantName,
+
+         @Consumption.valueHelpDefinition: [{entity: { name: 'I_ProductType_2', element: 'ProductType'}  }]
+         @ObjectModel.text.element: [ 'ProductTypeName' ]
+         ProductType as ProductType1,
+
+         @Semantics.text: true
+         ProductTypeName,
+
+         @Consumption.valueHelpDefinition: [{entity: { name: 'I_ProductGroup_2', element: 'ProductGroup'}  }]
+         @ObjectModel.text.element: [ 'ProductGroupName' ]
+         ProductGroup,
+
+         @Semantics.text: true
+         ProductGroupName,
+
+         @ObjectModel.text.element: [ 'MaterialUsabilityProfileName' ]
+         @Consumption.valueHelpDefinition: [{entity: { name: 'I_ProductStatus', element: 'Status'}  }]
+         ProfileCode,
+         @Semantics.text: true
+         MaterialUsabilityProfileName,
+
+         @ObjectModel.text.element: [ 'PurchasingGroupName' ]
+         @Consumption.valueHelpDefinition: [{entity: { name: 'I_PurchasingGroup', element: 'PurchasingGroup'}  }]
+         PurchasingGroup,
+         @Semantics.text: true
+         PurchasingGroupName,
+
+         @ObjectModel.text.element: [ 'SalesStatusText' ]
+         @Consumption.valueHelpDefinition: [{entity: { name: 'ZI_ProductSalesStatusVH', element: 'SalesStatus'}  }]
+         SalesStatus,
+         @Semantics.text: true
+         _SalesStatus.SalesStatusText,
+
+         BaseUnit,
+         @Consumption.valueHelpDefinition: [{entity: { name: 'I_ProdAvailabilityCheckGroup', element: 'ProdAvailabilityCheckGroup'}  }]
+         @ObjectModel.text.element: [ 'AvailabilityCheckTypeName' ]
+         AvailabilityCheckType,
+         @Semantics.text: true
+         AvailabilityCheckTypeName,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         SafetyStockQuantity,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         LotSizeRoundingQuantity,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         MinimumLotSizeQuantity,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         MaximumLotSizeQuantity,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         FixedLotSizeQuantity,
+
+         @ObjectModel.text.element: [ 'BackflushText' ]
+         @Consumption.valueHelpDefinition: [{entity: { name: 'ZI_BackflushVH', element: 'Backflush'}  }]
+         MatlCompIsMarkedForBackflush,
+         @Semantics.text: true
+         _Backflush.BackflushText,
+
+         MRPProfile,
+         LotSizingProcedure,
+         MRPPlanningCalendar,
+         IsSafetyTime,
+         SafetyDuration,
+
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         MaximumStockQuantity,
+
+         Currency,
+         @Semantics.amount.currencyCode: 'Currency'
+         PlannedPrice3InCoCodeCrcy,
+         @Semantics.amount.currencyCode: 'Currency'
+         StandardPrice,
+
+         FuturePlndPrice3ValdtyDate,
+
+
+         @ObjectModel.text.element: [ 'MRPTypeName' ]
+         @Consumption.valueHelpDefinition: [{entity: { name: 'I_MRPType', element: 'MRPType'}  }]
+         MRPType,
+         @Semantics.text: true
+         MRPTypeName,
+
+         @ObjectModel.text.element: [ 'MRPControllerName' ]
+         @Consumption.valueHelpDefinition: [{entity: { name: 'ZI_MRPController',  element: 'MRPController' } ,
+                        additionalBinding: [{ element: 'Plant' , localElement: 'Plant' }] }]
+         MRPResponsible,
+         @Semantics.text: true
+         MRPControllerName,
+
+         IsBatchManagementRequired,
+
+         IsMarkedForDeletion,
+
+         CreatedByUser,
+         CreationDate,
+         LastChangedByUser,
+         LastChangeDate,
+         LastChangeDateTime
+
+}
