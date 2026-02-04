@@ -1,0 +1,39 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'MARC Wrapper to get extra fields'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+
+define view entity ZI_ProductPlant_Wrapper
+  as select from P_ProductPlantBasic as Plant
+  association [1..1] to I_Product          as _Product          on  $projection.Product = _Product.Product
+  association [0..1] to I_ProductValuation as _ProductValuation on  $projection.Product             = _ProductValuation.Product
+                                                                and $projection.Plant               = _ProductValuation.ValuationArea
+                                                                and _ProductValuation.ValuationType = ''
+{
+  key    Plant.Product,
+  key    Plant.Plant,
+         _Product.BaseUnit,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         Plant.LotSizeRoundingQuantity,
+         Plant.MatlCompIsMarkedForBackflush,
+         Plant.MRPProfile,
+         Plant.LotSizingProcedure,
+         Plant.MRPPlanningCalendar,
+         Plant.IsSafetyTime,
+         Plant.SafetyDuration,
+         @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+         Plant.MaximumStockQuantity,
+
+         _ProductValuation.Currency,
+         @Semantics.amount.currencyCode: 'Currency'
+         _ProductValuation.PlannedPrice3InCoCodeCrcy,
+         @Semantics.amount.currencyCode: 'Currency'
+         _ProductValuation.StandardPrice,
+
+         _ProductValuation.FuturePlndPrice3ValdtyDate
+}
